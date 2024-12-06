@@ -17,7 +17,7 @@
 
     - name: Remove old container
       docker_container:
-        name: olyfaneva/back-end
+        name: back-end
         state: absent
       ignore_errors: yes
 
