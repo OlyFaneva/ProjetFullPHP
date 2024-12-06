@@ -20,24 +20,12 @@ RUN composer install --no-dev --ignore-platform-reqs --no-scripts --no-autoloade
 # Copier le reste des fichiers du projet
 COPY . .
 
+COPY env.txt .env
+
 # Générer l'autoloader optimisé et exécuter les scripts post-installation
 RUN composer dump-autoload --optimize \
     && composer install --no-dev --ignore-platform-reqs
 
-# Étape de production
-FROM php:8.2-fpm-alpine
-
-# Définir le répertoire de travail
-WORKDIR /app
-
-# Installer les extensions PHP nécessaires
-RUN apk add --no-cache \
-    libpng-dev libjpeg-turbo-dev libwebp-dev zlib-dev curl \
-    && docker-php-ext-configure gd --with-jpeg --with-webp \
-    && docker-php-ext-install gd pdo pdo_mysql
-
-# Copier les fichiers depuis le conteneur "builder"
-COPY --from=builder /app /app
 
 # Exposer le port par défaut de PHP-FPM
 EXPOSE 9000
