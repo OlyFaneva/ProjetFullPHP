@@ -28,4 +28,4 @@
         state: started
         restart_policy: always
         published_ports:  # Correct key to map ports
-          - "8080:9000"
+          - "8008:8000"

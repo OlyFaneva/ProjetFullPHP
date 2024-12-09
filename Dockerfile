@@ -1,34 +1,35 @@
-# Étape de construction
-FROM php:8.2-fpm-alpine AS builder
-
-# Définir le répertoire de travail
-WORKDIR /app
+# Utiliser une image PHP officielle avec Composer
+FROM php:8.2-fpm
 
 # Installer les dépendances système
-RUN apk add --no-cache curl git unzip libzip-dev \
-    && docker-php-ext-install zip pdo_mysql
-
-# Copier les fichiers nécessaires au projet
-COPY composer.json composer.lock ./
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    libpq-dev \
+    libzip-dev \
+    && docker-php-ext-install pdo pdo_mysql zip
 
 # Installer Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Installer les dépendances PHP
-RUN composer install --no-dev --ignore-platform-reqs --no-scripts --no-autoloader
+# Copier les fichiers de l'application
+WORKDIR /var/www/html
+COPY . /var/www/html
 
-# Copier le reste des fichiers du projet
-COPY . .
-
+# Copier le fichier .env.example comme .env (ou utiliser le .env fourni)
 COPY env.txt .env
 
-# Générer l'autoloader optimisé et exécuter les scripts post-installation
-RUN composer dump-autoload --optimize \
-    && composer install --no-dev --ignore-platform-reqs
+# Installer les dépendances Laravel
+RUN composer install --no-dev --optimize-autoloader
 
+# Générer la clé Laravel
+RUN php artisan key:generate
 
-# Exposer le port par défaut de PHP-FPM
-EXPOSE 9000
+# Donner les permissions nécessaires
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Commande de démarrage
-CMD ["php-fpm"]
+# Exposer le port
+EXPOSE 8000
+
+# Commande de démarrage par défaut
+CMD php artisan serve --host=0.0.0.0 --port=8000
