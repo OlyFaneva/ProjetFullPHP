@@ -5,7 +5,7 @@
   tasks:
     - name: Pull Docker image
       docker_image:
-        name: olyfaneva/back-end
+        name: olyfaneva/back
         tag: latest
         source: pull
 
