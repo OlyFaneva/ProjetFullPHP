@@ -1,4 +1,3 @@
-# Utiliser une image PHP officielle avec Composer
 FROM php:8.2-fpm
 
 # Installer les dépendances système
@@ -17,7 +16,7 @@ WORKDIR /var/www/html
 COPY . /var/www/html
 
 # Copier le fichier .env.example comme .env (ou utiliser le .env fourni)
-COPY env.txt .env
+COPY .env.txt .env
 
 # Installer les dépendances Laravel
 RUN composer install --no-dev --optimize-autoloader
@@ -33,3 +32,5 @@ EXPOSE 8000
 
 # Commande de démarrage par défaut
 CMD php artisan serve --host=0.0.0.0 --port=8000
+
+
