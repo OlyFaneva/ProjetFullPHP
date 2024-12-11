@@ -16,7 +16,7 @@ WORKDIR /var/www/html
 COPY . /var/www/html
 
 # Copier le fichier .env.example comme .env (ou utiliser le .env fourni)
-COPY .env.txt .env
+COPY env.txt .env
 
 # Installer les dépendances Laravel
 RUN composer install --no-dev --optimize-autoloader
