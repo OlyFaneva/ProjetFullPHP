@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'olyfaneva/back-end'
+        DOCKER_IMAGE = 'olyfaneva/back'
         DOCKER_TAG = 'latest'
         REPO_URL = 'https://github.com/OlyFaneva/ProjetFullPHP.git'
     }
