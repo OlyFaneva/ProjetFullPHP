@@ -15,10 +15,10 @@ class TodosConroller extends Controller
         if ($todoAll == null) {
             return response()->json([
                 'message' => 'nope le izy',
-            ]);
+            ], 404);
         }
 
-        return response()->json($todoAll);
+        return response()->json($todoAll, 200);
 
     }
 
@@ -40,7 +40,7 @@ class TodosConroller extends Controller
         if ($todo == null) {
             return response()->json([
                 'message' => 'nope le izy',
-            ]);
+            ], 404);
         }
 
         $todo->delete();
@@ -83,7 +83,7 @@ class TodosConroller extends Controller
         if ($validators->fails()) {
             return response()->json([
                 'message' => $validators->errors(),
-            ]);
+            ], 422);
         }
 
         $content = $request->content;

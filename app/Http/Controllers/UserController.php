@@ -48,7 +48,7 @@ class UserController extends Controller
         if ($validators->fails()) {
             return response()->json([
                 'message' => $validators->errors(),
-            ]);
+            ], 422);
         }
 
         $data = User::create([
