@@ -5,10 +5,11 @@ pipeline {
         DOCKER_IMAGE = 'olyfaneva/back'
         DOCKER_TAG = 'latest'
         REPO_URL = 'https://github.com/OlyFaneva/ProjetFullPHP.git'
-        SMTP_HOST = 'smtp.gmail.com'
-        SMTP_PORT = '587'
-        SMTP_USER = 'olyrarivomanana.com'
-        SMTP_PASS = 'tkbnzycggxoskhwa'}
+        // SMTP_HOST = 'smtp.gmail.com'
+        // SMTP_PORT = '587'
+        // SMTP_USER = 'olyrarivomanana.com'
+        // SMTP_PASS = 'tkbnzycggxoskhwa'
+        // }
 
     stages {
         // Étape 1: Cloner le dépôt Git
@@ -77,30 +78,30 @@ pipeline {
             echo 'Pipeline failed'
         }
 
-        always {
-                script {
-                    def buildStatus = currentBuild.currentResult
+        // always {
+        //         script {
+        //             def buildStatus = currentBuild.currentResult
 
-                    emailext(
-                    subject: "Pipeline ${env.JOB_NAME} - Build ${env.BUILD_NUMBER} : ${buildStatus}",
-                    body: """
-                    Bonjour,
+        //             emailext(
+        //             subject: "Pipeline ${env.JOB_NAME} - Build ${env.BUILD_NUMBER} : ${buildStatus}",
+        //             body: """
+        //             Bonjour,
 
-                    Voici les détails de l'exécution du pipeline :
+        //             Voici les détails de l'exécution du pipeline :
 
-                    - **Nom du Job** : ${env.JOB_NAME}
-                    - **Numéro du Build** : ${env.BUILD_NUMBER}
-                    - **Statut du Build** : ${buildStatus}
-                    - **URL du Build** : ${env.BUILD_URL}
+        //             - **Nom du Job** : ${env.JOB_NAME}
+        //             - **Numéro du Build** : ${env.BUILD_NUMBER}
+        //             - **Statut du Build** : ${buildStatus}
+        //             - **URL du Build** : ${env.BUILD_URL}
 
-                    Merci,
-                    L'équipe Jenkins
-                    """,
-                    to: 'olyrarivomanana@gmail.com',
-                    mimeType: 'text/html',
-                    replyTo: 'no-reply@gmail.com'
-                )
-                }
-        }
+        //             Merci,
+        //             L'équipe Jenkins
+        //             """,
+        //             to: 'olyrarivomanana@gmail.com',
+        //             mimeType: 'text/html',
+        //             replyTo: 'no-reply@gmail.com'
+        //         )
+        //         }
+        // }
     }
 }
