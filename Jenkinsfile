@@ -89,7 +89,7 @@ pipeline {
                     Merci,
                     L'équipe Jenkins
                     """,
-                    to: "akutagawakarim@gmail.com",
+                    to: "olyrarivomanana@gmail.com",
                     mimeType: 'text/html',
                     replyTo: 'no-reply@gmail.com'
                 )
