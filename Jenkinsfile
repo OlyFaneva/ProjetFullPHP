@@ -28,6 +28,17 @@ pipeline {
             }
         }
 
+        stage('Scan Docker Image') {
+            steps {
+                script {
+                    echo 'Scanning Docker image for vulnerabilities'
+                    sh '''
+                trivy image ${DOCKER_IMAGE}:${DOCKER_TAG} || exit 1
+            '''
+                }
+            }
+        }
+
         // Étape 3: Pousser l'image Docker vers Docker Hub
         stage('Push to Docker Hub') {
             steps {
