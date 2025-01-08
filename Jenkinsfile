@@ -1,10 +1,14 @@
 pipeline {
-      agent any
+    agent any
 
     environment {
         DOCKER_IMAGE = 'olyfaneva/back'
         DOCKER_TAG = 'latest'
         REPO_URL = 'https://github.com/OlyFaneva/ProjetFullPHP.git'
+        SMTP_HOST = 'smtp.gmail.com'
+        SMTP_PORT = '587'
+        SMTP_USER = 'olyrarivomanana.com'
+        SMTP_PASS = 'tkbnzycggxoskhwa'
     }
 
     stages {
@@ -28,17 +32,19 @@ pipeline {
             }
         }
 
+        // Étape 3: Scanner l'image Docker
         stage('Scan Docker Image') {
             steps {
                 script {
                     echo 'Scanning Docker image for vulnerabilities'
                     sh '''
-                trivy image ${DOCKER_IMAGE}:${DOCKER_TAG} || exit 1
-            '''
+                        trivy image ${DOCKER_IMAGE}:${DOCKER_TAG} || exit 1
+                    '''
                 }
             }
         }
-        // Étape 3: Pousser l'image Docker vers Docker Hub
+
+        // Étape 4: Pousser l'image Docker vers Docker Hub
         stage('Push to Docker Hub') {
             steps {
                 script {
@@ -50,25 +56,7 @@ pipeline {
             }
         }
 
-//         stage('Deploy to VPS') {
-//     steps {
-//         script {
-//             echo 'Deploying to VPS'
-//             withCredentials([usernamePassword(credentialsId: 'vps', usernameVariable: 'SSH_CREDENTIALS_USR', passwordVariable: 'SSH_CREDENTIALS_PSW')]) {
-//                 sh """
-//                     sshpass -p "${SSH_CREDENTIALS_PSW}" ssh -o StrictHostKeyChecking=no ${SSH_CREDENTIALS_USR}@89.116.111.200 << EOF
-//                         docker pull ${DOCKER_IMAGE}:${DOCKER_TAG}
-//                         docker stop backend || true
-//                         docker rm backend || true
-//                         docker run -d --name backend -p 8000:8005 ${DOCKER_IMAGE}:${DOCKER_TAG}
-// EOF
-//                 """
-//             }
-//         }
-//     }
-// }
-
-
+        // Étape 5: Exécuter un playbook Ansible
         stage('Run Ansible Playbook') {
             steps {
                 script {
@@ -83,7 +71,29 @@ pipeline {
 
     post {
         always {
-            echo "Pipeline finished"
+            script {
+                def buildStatus = currentBuild.currentResult
+
+                emailext(
+                    subject: "Pipeline ${env.JOB_NAME} - Build ${env.BUILD_NUMBER} : ${buildStatus}",
+                    body: """
+                    Bonjour,
+
+                    Voici les détails de l'exécution du pipeline :
+
+                    - **Nom du Job** : ${env.JOB_NAME}
+                    - **Numéro du Build** : ${env.BUILD_NUMBER}
+                    - **Statut du Build** : ${buildStatus}
+                    - **URL du Build** : ${env.BUILD_URL}
+
+                    Merci,
+                    L'équipe Jenkins
+                    """,
+                    to: "akutagawakarim@gmail.com",
+                    mimeType: 'text/html',
+                    replyTo: 'no-reply@gmail.com'
+                )
+            }
         }
         success {
             echo "Pipeline succeeded"
