@@ -7,7 +7,7 @@ pipeline {
         REPO_URL = 'https://github.com/OlyFaneva/ProjetFullPHP.git'
         SMTP_HOST = 'smtp.gmail.com'
         SMTP_PORT = '587'
-        SMTP_USER = 'olyrarivomanana@gmail.com'
+        SMTP_USER = 'olyrarivomanana.com'
         SMTP_PASS = 'tkbnzycggxoskhwa'}
 
     stages {
